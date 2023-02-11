@@ -1,26 +1,55 @@
-#include <iostream>
+// Jason Whitlow
+// csci115 lab3 mergeSort-selectionSort
+// this program contains two algorithms to sort an array, mergeSort() and selectionSort().
+// the program demonstrates the difference in runtime in each algorithm. 
 
+#include <iostream>
+#include <chrono>
 using namespace std;
+using namespace std::chrono;
+ 
+// if the length of the array is 5, first should equal 0, and last should equal 4.
+// first and last should not be set outside the scope of the array.
+// mergeSort is capable of sorting subarrays of arr.
 void mergeSort(int *arr, const int first, const int last);
 void merge(int *arr, const int first, const int mid, const int last);
 void printArr(const int *arr, const int first, const int last);
 
+// if arr[5] then length must equal 5.
+// length should not be set smaller or larger than the length of the array.
+void selectionSort(int *arr, const int length);
+
 int main()
 {
+    // RANDOMIZE NUMBERS----------------------------------------------------------------
+    int arr1[8] = {6, -90, 10, 7, 11, 2, 5, 9};
+    int arr2[8] = {6, -90, 10, 7, 11, 2, 5, 9};
 
-    int arr[8] = {6, -90, 10, 7, 11, 2, 5, 9};
-    int len = sizeof(arr)/sizeof(arr[0])-1;
-    mergeSort(arr, 0, len);
-    cout << "mainArr" << endl;
-    printArr(arr, 0, len);
+    // mergeSort()
+    int len = sizeof(arr1)/sizeof(arr1[0]);
+    auto start = high_resolution_clock::now();
+    mergeSort(arr1, 0, len-1);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<nanoseconds>(stop - start);
+    cout << "mergeSort() time elapsed: " <<  duration.count() << " nanoseconds" << endl;
+
+    // selectionSort()
+    int len2 = sizeof(arr2)/sizeof(arr2[0]);
+    start = high_resolution_clock::now();
+    selectionSort(arr2, len2);
+    stop = high_resolution_clock::now();
+    duration = duration_cast<nanoseconds>(stop - start);
+
+    cout << "mergeSort() time elapsed: " <<  duration.count() << " nanoseconds" << endl;
+
+
     cin.get();
     return 0;
 }
 
-// recursively sorts an array by dividing it into a left and right array
+// recursively sorts an array by dividing it into a left and right array.
 void mergeSort(int *arr, const int first, const int last)
 {
-    // check if first and last are within the bounds of the arr
     if (first < last)
     {
         // if the length of the array is odd, the length of the left partition will equal the length of the right partition - 1.
@@ -47,7 +76,6 @@ void merge(int *arr, const int first, const int mid, const int last)
     for (size_t i = 0; i < rightArrLength; i++)
         rightArr[i] = arr[mid + 1 + i];
     
-
     // merge leftArr and rightArr.
     int i = 0;
     int j = 0;
@@ -82,6 +110,22 @@ void merge(int *arr, const int first, const int mid, const int last)
         arr[k] = rightArr[j];
         j++;
         k++;
+    }
+}
+
+// sorts an array using a nested for loop. 
+void selectionSort(int *arr, const int length)
+{
+    int temp;
+    for (size_t i = 0; i < length-1; i++)
+    {
+        for(size_t j=i+1; j < length; j++)
+            if (arr[j]<arr[i])
+            {
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
     }
 }
 
